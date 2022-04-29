@@ -2,7 +2,7 @@ import useSupabase from 'src/boot/supabase'
 import useAuthUser from 'src/composables/UseAuthUser'
 
 export default function useApi () {
-  const supabase = useSupabase()
+  const { supabase } = useSupabase()
   const { user } = useAuthUser()
 
   const list = async (table) => {
@@ -38,15 +38,12 @@ export default function useApi () {
   const update = async (table, form) => {
     const { data, error } = await supabase
       .from(table)
-      .update([
-        {
-          ...form
-        }
-      ])
-      .march({ id: form.id })
+      .update({ ...form })
+      .match({ id: form.id })
     if (error) throw error
     return data
   }
+
   const remove = async (table, id) => {
     const { data, error } = await supabase
       .from(table)

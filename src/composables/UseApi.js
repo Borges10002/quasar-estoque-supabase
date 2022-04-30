@@ -48,7 +48,7 @@ export default function useApi () {
     const { data, error } = await supabase
       .from(table)
       .delete()
-      .march({ id })
+      .match({ id })
     if (error) throw error
     return data
   }

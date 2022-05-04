@@ -21,14 +21,14 @@
       <q-input
          label="Name"
          v-model="form.amount"
-         :rules="[ val => val.length > 0 || 'Amount is required']"
+         :rules="[ val => !!val || 'Amount is required']"
          type="number"
        />
 
       <q-input
          label="Price"
          v-model="form.price"
-         :rules="[ val => val.length > 0 || 'Price is required']"
+         :rules="[ val => !!val || 'Price is required']"
          prefix="R$"
        />
 
@@ -40,6 +40,7 @@
          option-label="name"
          map-options
          emit-value
+         :rules="[val => !!val ||'Category is required']"
        />
 
        <q-btn

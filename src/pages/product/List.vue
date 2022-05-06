@@ -12,6 +12,16 @@
           <span class="text-h6">
             Product
           </span>
+          <q-btn
+            label="My Store"
+            dense
+            size="sm"
+            outline
+            class="q-ml-sm"
+            icon="mdi-store"
+            color="primary"
+            @click="handleGoToStore"
+          />
           <q-space />
         <q-btn
           v-if="$q.platform.is.desktop"
@@ -60,28 +70,30 @@
 <script>
 import { defineComponent, onMounted, ref } from 'vue'
 import useApi from 'src/composables/UseApi'
+import useAuthUser from 'src/composables/UseAuthUser'
 import useNotify from 'src/composables/UseNotify'
 import { useRouter } from 'vue-router'
 import { useQuasar } from 'quasar'
 
 import { columnsProduct } from './table'
+import { route } from 'quasar/wrappers'
 
 export default defineComponent({
-  name: 'PageProdutoList',
+  name: 'PageProductList',
   setup () {
     const products = ref([])
     const loading = ref(true)
     const router = useRouter()
     const table = 'product'
-
-    const { list, remove } = useApi()
-    const { notifyError, notifySuccess } = useNotify()
     const $q = useQuasar()
+    const { listPublic, remove } = useApi()
+    const { user } = useAuthUser()
+    const { notifyError, notifySuccess } = useNotify()
 
-    const handlelistProducts = async () => {
+    const handleListProducts = async () => {
       try {
         loading.value = true
-        products.value = await list(table)
+        products.value = await listPublic(table, user.value.id)
         loading.value = false
       } catch (error) {
         notifyError(error.message)
@@ -102,15 +114,20 @@ export default defineComponent({
         }).onOk(async () => {
           await remove(table, product.id)
           notifySuccess('successfully deleted')
-          handlelistProducts()
+          handleListProducts()
         })
       } catch (error) {
         notifyError(error.message)
       }
     }
 
+    const handleGoToStore = () => {
+      const idUser = user.value.id
+      route.push({ name: 'product-public', params: { id: idUser } })
+    }
+
     onMounted(() => {
-      handlelistProducts()
+      handleListProducts()
     })
 
     return {
@@ -118,7 +135,8 @@ export default defineComponent({
       products,
       loading,
       handleEdit,
-      handleRemoveProduct
+      handleRemoveProduct,
+      handleGoToStore
     }
   }
 })

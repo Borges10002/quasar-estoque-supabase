@@ -23,18 +23,23 @@
       </template>
 
         <template v-slot:item="props">
-          <div class="q-pa-xs col-xs-12 col-sm-6 col-md-4">
-            <q-card>
-              <q-img :src="props.row.img_url" :ratio="4/3" />
-              <q-card-section class="text-center">
-               <div class="text-h6">{{ props.row.name }}</div>
-               <div class="text-subtitle2">{{ formatCurrency(props.row.price) }}</div>
-              </q-card-section>
-            </q-card>
-          </div>
+          <div class="q-pa-xs col-xs-12 col-sm-6 col-md-3" key="card">
+              <q-card class="cursor-pointer" v-ripple:primary @click="handleShowDetails(props.row)">
+                <q-img :src="props.row.img_url" :ratio="4/3" />
+                <q-card-section class="text-center">
+                  <div class="text-h6">{{ props.row.name }}</div>
+                  <div class="text-subtitle2">{{ formatCurrency(props.row.price) }}</div>
+                </q-card-section>
+              </q-card>
+            </div>
         </template>
       </q-table>
     </div>
+    <dialog-product-details
+      :show="showDialogDetails"
+      :product="productDetails"
+      @hide-dialog="showDialogDetails = false"
+    />
   </q-page>
 </template>
 
@@ -46,9 +51,13 @@ import useNotify from 'src/composables/UseNotify'
 import { formatCurrency } from 'src/utils/format'
 
 import { columnsProduct } from './table'
+import DialogProductDetails from 'components/DialogProductDetails'
 
 export default defineComponent({
   name: 'PageProductPublic',
+  components: {
+    DialogProductDetails
+  },
   setup () {
     const products = ref([])
     const loading = ref(true)
@@ -58,6 +67,8 @@ export default defineComponent({
     const { listPublic } = useApi()
     const { notifyError } = useNotify()
     const route = useRoute()
+    const showDialogDetails = ref(false)
+    const productDetails = ref({})
 
     const handlelistProducts = async (userId) => {
       try {
@@ -67,6 +78,11 @@ export default defineComponent({
       } catch (error) {
         notifyError(error.message)
       }
+    }
+
+    const handleShowDetails = (product) => {
+      productDetails.value = product
+      showDialogDetails.value = true
     }
 
     onMounted(() => {
@@ -80,7 +96,10 @@ export default defineComponent({
       products,
       loading,
       filter,
-      formatCurrency
+      formatCurrency,
+      showDialogDetails,
+      productDetails,
+      handleShowDetails
     }
   }
 })

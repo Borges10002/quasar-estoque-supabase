@@ -28,11 +28,13 @@ export default function useApi () {
     return data
   }
 
-  const listPublic = async (table, userId) => {
-    const { data, error } = await supabase
+  const listPublic = async (table, userId, columnFilter = '', filter = '') => {
+    const { data, error } =
+    await supabase
       .from(table)
       .select('*')
       .eq('user_id', userId)
+      .eq(columnFilter, filter)
     if (error) throw error
     return data
   }

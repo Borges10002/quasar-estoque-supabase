@@ -4,6 +4,23 @@
       <div class="col-12 text-center text-h4">
         {{brand.name}}
       </div>
+      </div>
+      <div class="row">
+      <q-select
+        outlined
+        v-model="categoryId"
+        :options="optionsCategories"
+        label="Category"
+        option-label="name"
+        option-value="id"
+        map-options
+        emit-value
+        clearable
+        class="col-12"
+        dense
+        @update:model-value="handleListProducts(route.params.id)"
+      />
+
       <q-table
        :rows="products"
        :columns="columnsProduct"
@@ -37,7 +54,8 @@
             </div>
         </template>
       </q-table>
-    </div>
+      </div>
+
     <dialog-product-details
       :show="showDialogDetails"
       :product="productDetails"
@@ -64,36 +82,39 @@ export default defineComponent({
   setup () {
     const products = ref([])
     const loading = ref(true)
-    const table = 'product'
     const filter = ref('')
-
+    const table = 'product'
+    const showDialogDetails = ref(false)
+    const productDetails = ref({})
+    const optionsCategories = ref([])
+    const categoryId = ref('')
     const { listPublic, brand } = useApi()
     const { notifyError } = useNotify()
     const route = useRoute()
-    const showDialogDetails = ref(false)
-    const productDetails = ref({})
 
-    const handlelistProducts = async (userId) => {
+    const handleListProducts = async (userId) => {
       try {
         loading.value = true
-        products.value = await listPublic(table, userId)
+        products.value = categoryId.value ? await listPublic(table, userId, 'category_id', categoryId.value) : await listPublic(table, userId)
         loading.value = false
       } catch (error) {
         notifyError(error.message)
       }
     }
-
     const handleShowDetails = (product) => {
       productDetails.value = product
       showDialogDetails.value = true
     }
+    const hadleListCategories = async (userId) => {
+      optionsCategories.value = await listPublic('category', userId)
+    }
 
     onMounted(() => {
       if (route.params.id) {
-        handlelistProducts(route.params.id)
+        hadleListCategories(route.params.id)
+        handleListProducts(route.params.id)
       }
     })
-
     return {
       columnsProduct,
       products,
@@ -103,7 +124,11 @@ export default defineComponent({
       showDialogDetails,
       productDetails,
       handleShowDetails,
-      brand
+      handleListProducts,
+      brand,
+      optionsCategories,
+      categoryId,
+      route
     }
   }
 })

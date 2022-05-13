@@ -24,11 +24,13 @@
       <q-table
        :rows="products"
        :columns="columnsProduct"
+       v-model:pagination="intialPagination"
        row-key="id"
        class="col-12"
        :loading="loading"
        :filter="filter"
        grid
+       hide-pagination
       >
        <template v-slot:top>
           <span class="text-h6">
@@ -55,6 +57,14 @@
         </template>
       </q-table>
       </div>
+      <div class="row justify-center">
+         <q-pagination
+         direction-links
+         v-model="intialPagination.page"
+         :max="pagesNumber"
+         @update:model-value="handleScrollToTop"
+         />
+      </div>
 
     <dialog-product-details
       :show="showDialogDetails"
@@ -65,13 +75,13 @@
 </template>
 
 <script>
-import { defineComponent, onMounted, ref } from 'vue'
+import { defineComponent, onMounted, ref, computed } from 'vue'
 import useApi from 'src/composables/UseApi'
 import { useRoute } from 'vue-router'
 import useNotify from 'src/composables/UseNotify'
 import { formatCurrency } from 'src/utils/format'
 
-import { columnsProduct } from './table'
+import { columnsProduct, intialPagination } from './table'
 import DialogProductDetails from 'components/DialogProductDetails'
 
 export default defineComponent({
@@ -109,6 +119,10 @@ export default defineComponent({
       optionsCategories.value = await listPublic('category', userId)
     }
 
+    const handleScrollToTop = () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+
     onMounted(() => {
       if (route.params.id) {
         hadleListCategories(route.params.id)
@@ -128,7 +142,10 @@ export default defineComponent({
       brand,
       optionsCategories,
       categoryId,
-      route
+      route,
+      intialPagination,
+      pagesNumber: computed(() => Math.ceil(products.value.length / intialPagination.value.rowPerPage)),
+      handleScrollToTop
     }
   }
 })

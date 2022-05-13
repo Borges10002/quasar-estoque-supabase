@@ -72,6 +72,7 @@
 <script>
 
 import useApi from 'src/composables/UseApi'
+import useAuthUser from 'src/composables/UseAuthUser'
 import useNotify from 'src/composables/UseNotify'
 import { defineComponent, ref, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -83,8 +84,9 @@ export default defineComponent({
     const table = 'product'
     const router = useRouter()
     const route = useRoute()
-    const { post, getById, update, list, uploadImg } = useApi()
+    const { post, getById, update, listPublic, uploadImg } = useApi()
     const { notifyError, notifySuccess } = useNotify()
+    const { user } = useAuthUser()
 
     const isUpdate = computed(() => route.params.id)
 
@@ -109,7 +111,7 @@ export default defineComponent({
     })
 
     const handlelistCategories = async () => {
-      optionsCategory.value = await list('category')
+      optionsCategory.value = await listPublic('category', user.value.id)
     }
 
     const handleSubmit = async () => {

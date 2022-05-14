@@ -9,12 +9,12 @@ const columnsProduct = [
   { name: 'actions', align: 'right', label: 'Actions', field: 'actions', sortable: false }
 ]
 
-const intialPagination = ref({
+const initialPagination = ref({
   page: 1,
-  rowPerPage: 5
+  rowsPerPage: 8
 })
 
 export {
   columnsProduct,
-  intialPagination
+  initialPagination
 }

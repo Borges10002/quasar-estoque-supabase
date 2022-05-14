@@ -2,10 +2,10 @@
   <q-page padding>
     <div class="row" v-if="brand.name">
       <div class="col-12 text-center text-h4">
-        {{brand.name}}
+        {{ brand.name }}
       </div>
-      </div>
-      <div class="row">
+    </div>
+    <div class="row">
       <q-select
         outlined
         v-model="categoryId"
@@ -22,30 +22,35 @@
       />
 
       <q-table
-       :rows="products"
-       :columns="columnsProduct"
-       v-model:pagination="intialPagination"
-       row-key="id"
-       class="col-12"
-       :loading="loading"
-       :filter="filter"
-       grid
-       hide-pagination
+        :rows="products"
+        :columns="columnsProduct"
+        v-model:pagination="initialPagination"
+        row-key="id"
+        class="col-12"
+        :loading="loading"
+        :filter="filter"
+        grid
+        hide-pagination
       >
-       <template v-slot:top>
+        <template v-slot:top>
           <span class="text-h6">
             Products
           </span>
           <q-space />
           <q-input outlined dense debounce="300" v-model="filter" placeholder="Search" class="q-mr-sm">
             <template v-slot:append>
-             <q-icon name="mdi-magnify" />
+              <q-icon name="mdi-magnify" />
             </template>
           </q-input>
-      </template>
+        </template>
 
         <template v-slot:item="props">
-          <div class="q-pa-xs col-xs-12 col-sm-6 col-md-3" key="card">
+          <transition-group
+            appear
+            enter-active-class="animated fadeInLeft"
+            leave-active-class="animated fadeOutRight"
+          >
+            <div class="q-pa-xs col-xs-12 col-sm-6 col-md-3" key="card">
               <q-card class="cursor-pointer" v-ripple:primary @click="handleShowDetails(props.row)">
                 <q-img :src="props.row.img_url" :ratio="4/3" />
                 <q-card-section class="text-center">
@@ -54,18 +59,27 @@
                 </q-card-section>
               </q-card>
             </div>
+            <div class="col-12" v-if="props.rowIndex === 3 && brand.paralax_url" key="paralax">
+              <q-parallax :height="200" :speed="0.5">
+                <template v-slot:media>
+                  <img :src="brand.paralax_url">
+                </template>
+
+                <h3 class="text-white">{{ brand.name }}</h3>
+              </q-parallax>
+            </div>
+          </transition-group>
         </template>
       </q-table>
-      </div>
-      <div class="row justify-center">
-         <q-pagination
-         direction-links
-         v-model="intialPagination.page"
-         :max="pagesNumber"
-         @update:model-value="handleScrollToTop"
-         />
-      </div>
-
+    </div>
+    <div class="row justify-center">
+      <q-pagination
+        v-model="initialPagination.page"
+        :max="pagesNumber"
+        direction-links
+        @update:model-value="handleScrollToTop"
+      />
+    </div>
     <dialog-product-details
       :show="showDialogDetails"
       :product="productDetails"
@@ -75,15 +89,13 @@
 </template>
 
 <script>
-import { defineComponent, onMounted, ref, computed } from 'vue'
+import { defineComponent, ref, onMounted, computed } from 'vue'
 import useApi from 'src/composables/UseApi'
-import { useRoute } from 'vue-router'
 import useNotify from 'src/composables/UseNotify'
+import { useRoute } from 'vue-router'
+import { columnsProduct, initialPagination } from './table'
 import { formatCurrency } from 'src/utils/format'
-
-import { columnsProduct, intialPagination } from './table'
 import DialogProductDetails from 'components/DialogProductDetails'
-
 export default defineComponent({
   name: 'PageProductPublic',
   components: {
@@ -101,7 +113,6 @@ export default defineComponent({
     const { listPublic, brand } = useApi()
     const { notifyError } = useNotify()
     const route = useRoute()
-
     const handleListProducts = async (userId) => {
       try {
         loading.value = true
@@ -118,11 +129,9 @@ export default defineComponent({
     const hadleListCategories = async (userId) => {
       optionsCategories.value = await listPublic('category', userId)
     }
-
     const handleScrollToTop = () => {
       window.scrollTo({ top: 0, behavior: 'smooth' })
     }
-
     onMounted(() => {
       if (route.params.id) {
         hadleListCategories(route.params.id)
@@ -143,9 +152,9 @@ export default defineComponent({
       optionsCategories,
       categoryId,
       route,
-      intialPagination,
-      pagesNumber: computed(() => Math.ceil(products.value.length / intialPagination.value.rowPerPage)),
-      handleScrollToTop
+      initialPagination,
+      handleScrollToTop,
+      pagesNumber: computed(() => Math.ceil(products.value.length / initialPagination.value.rowsPerPage))
     }
   }
 })

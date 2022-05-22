@@ -161,11 +161,11 @@ module.exports = configure(function (ctx) {
       manifest: {
         name: 'Quasar Estoque Supabase',
         short_name: 'Quasar Estoque Supabase',
-        description: 'A Quasar Framework app',
+        description: 'A Quasar Framework app - teste',
         display: 'standalone',
         orientation: 'portrait',
         background_color: '#ffffff',
-        theme_color: '#027be3',
+        theme_color: '#0f0091',
         icons: [
           {
             src: 'icons/icon-128x128.png',

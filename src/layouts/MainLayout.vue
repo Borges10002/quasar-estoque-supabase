@@ -15,6 +15,8 @@
           Stock App
         </q-toolbar-title>
 
+        <dark-mode-toggle/>
+
         <div>
             <q-btn-dropdown flat color="white" icon="person">
               <q-list>
@@ -62,6 +64,7 @@ import useApi from 'src/composables/UseApi'
 import { useRouter } from 'vue-router'
 import { useQuasar } from 'quasar'
 import EssentialLink from 'components/EssentialLink.vue'
+import DarkModeToggle from 'src/components/DarkModeToggle.vue'
 
 const linksList = [
   {
@@ -94,7 +97,8 @@ export default defineComponent({
   name: 'MainLayout',
 
   components: {
-    EssentialLink
+    EssentialLink,
+    DarkModeToggle
   },
 
   setup () {

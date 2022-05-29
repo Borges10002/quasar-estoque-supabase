@@ -5,15 +5,15 @@
        <div class="col-md-4 col-sm-6 col-xs-10 q-gutter-y-md">
 
          <q-input
-            label="New Password"
+            label="Nova Senha"
             v-model="password"
-            :rules="[ val => val.length >= 6 || 'Password is required']"
+            :rules="[ val => val.length >= 6 || 'Senha obrigatório']"
             type="email"
          />
 
          <div class="full-width q-pt-md q-gutter-y-sm">
           <q-btn
-          label="Send New Password"
+          label="Enviar nova senha"
           color="primary"
           class="full-width"
           outline

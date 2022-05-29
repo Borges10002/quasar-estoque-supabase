@@ -7,14 +7,15 @@
           label="Email"
           v-model="form.email"
           lazy-rules
-          :rules="[ val => val.length > 0 || 'Email is required']"
+          :rules="[ val => val.length > 0 || 'O e-mail é obrigatório']"
           type="email"
          />
         <q-input
           label="Password"
           v-model="form.password"
+          type="password"
           lazy-rules
-          :rules="[ val => val.length > 0 || 'Password is required']"
+          :rules="[ val => val.length > 0 || 'Senha é obrigatório']"
          />
 
          <div class="full-width q-pt-md">
@@ -30,7 +31,7 @@
 
         <div class="full-width q-gutter-y-sm">
           <q-btn
-          label="Register"
+          label="Registrar"
           color="primary"
           class="full-width"
           flat
@@ -38,7 +39,7 @@
           size="sm"
          />
         <q-btn
-          label="Forgot Password ?"
+          label="Esqueceu a senha ?"
           color="primary"
           class="full-width"
           flat

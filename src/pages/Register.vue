@@ -7,25 +7,25 @@
           label="Name"
           v-model="form.name"
           lazy-rules
-          :rules="[ val => val.length > 0 || 'Name is required']"
+          :rules="[ val => val.length > 0 || 'Nome é obrigatório']"
          />
          <q-input
           label="Email"
           v-model="form.email"
           lazy-rules
-          :rules="[ val => val.length > 0 || 'Email is required']"
+          :rules="[ val => val.length > 0 || 'Email é obrigatório']"
           type="email"
          />
         <q-input
           label="Password"
           v-model="form.password"
           lazy-rules
-          :rules="[ val => val.length >= 6 || 'Password is required and 6 characters']"
+          :rules="[ val => val.length >= 6 || 'A senha é obrigatória e precisar ser mais de 5 caracteres']"
          />
 
          <div class="full-width q-pt-md q-gutter-y-sm">
           <q-btn
-          label="Register"
+          label="Registrar"
           color="primary"
           class="full-width"
           outline
@@ -33,7 +33,7 @@
           type="submit"
          />
           <q-btn
-          label="Back"
+          label="Retonar"
           color="dark"
           class="full-width"
           rounded
